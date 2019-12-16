@@ -8,3 +8,7 @@ require 'vendor/autoload.php';
 include_once _lib . "config.php";
 include_once _lib . "constant.php";
 include_once _lib . "functions.php";
+
+include_once _lib . "type.php";
+include_once _lib . "router.php";
+

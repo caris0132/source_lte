@@ -18,6 +18,10 @@ function prepareUri($uri, $prefix = '') {
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
+    $r->addGroup('/admin', function (FastRoute\RouteCollector $r) {
+        $r->addRoute(['GET','POST'], '/{com:[a-zA-Z0-9_-]+}', 'admin/index.php');
+    });
+
     $r->addRoute(['GET','POST'], '[/[&page={page:\d+}]]', function ($params) {
         $_GET['com'] == 'index';
         if ($params['page']) {
@@ -27,31 +31,31 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     });
 
     $r->addRoute(['GET','POST'], '/index.php', function ($params) {
-        global $config, $config_url_f;
+        global $config, $config_url_folder;
         $_GET['com'] == 'index';
 
         if ($config['index']==1) {
-            redirect_router($config_url_f);
+            redirect($config_url_folder);
         }
     });
 
     $r->addRoute(['GET','POST'], '/trang-chu.html', function ($params) {
-        global $config_url_f;
-        redirect_router($config_url_f);
+        global $config_url_folder;
+        redirect($config_url_folder);
     });
 
     $r->addRoute(['GET','POST'], '/index.html', function ($params) {
-        global $config_url_f;
-        redirect_router($config_url_f);
+        global $config_url_folder;
+        redirect($config_url_folder);
     });
 
     $r->addRoute(['GET','POST'], '/admin[/]', function ($params) {
-        global $config_url_f;
-        redirect_router($config_url_f . '/admin/index.php');
+        global $config_url_folder;
+        redirect($config_url_folder . '/admin/index.php');
     });
 
     $r->addRoute(['GET','POST'], '/tags/{tenkhongdau:[a-zA-Z0-9_-]+}-{id:\d+}[&page={page:\d+}]', function ($params) {
-        global $config_url_f;
+        global $config_url_folder;
         foreach ($params as $key => $item) {
             $_GET[$key] = $item;
         }
@@ -60,10 +64,10 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
     // chuyển tất cả link có "/" ở cuối về link không "/"
     $r->addRoute(['GET','POST'], "/{com:[a-zA-Z0-9_-]+}/", function ($params) {
-        global $config_url_f;
+        global $config_url_folder;
         $uri_page = $_SERVER['REQUEST_URI'];
         $uri_page_trim = rtrim($uri_page, '/');
-        redirect_router($uri_page_trim);
+        redirect($uri_page_trim);
     });
 
     // router com và page
@@ -93,7 +97,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
     // router timthumb
     $r->addRoute(['GET','POST'], '/thumb/{w:\d+}x{h:\d+}/{zc:\d+}/{src:.+}', function ($params) {
-        global $config_url_f;
+        global $config_url_folder;
         foreach ($params as $key => $item) {
             $_GET[$key] = $item;
         }
@@ -101,8 +105,8 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
         // do timthumb sài QUERY_STRING để tạo tên cho file cache nên phải khởi tạo QUERY_STRING
         $_SERVER['QUERY_STRING'] = http_build_query($_GET);
 
-        if ($config_url_f) {
-            $_GET['src'] =  $config_url_f . '/' . $_GET['src'];
+        if ($config_url_folder) {
+            $_GET['src'] =  $config_url_folder . '/' . $_GET['src'];
         }
         include "timthumb.php";
     });
@@ -114,11 +118,9 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
 
-$uri = prepareUri($uri, $config_url_f);
+$uri = prepareUri($uri, $config_url_folder);
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
-
-
 switch ($routeInfo[0]) {
 	case FastRoute\Dispatcher::NOT_FOUND:
 	header( "HTTP/1.1 404 Not Found" );
