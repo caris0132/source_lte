@@ -8,13 +8,13 @@ session_start();
 
 
 $config_url_folder = '/source_lte';
-$config_url = $_SERVER["SERVER_NAME"] . $config_url_f;
+$config_url = $_SERVER["SERVER_NAME"] . $config_url_folder;
 $_SESSION['ckfinder_baseUrl'] = $config_url;
 
-$config['database']['host'] = 'localhost';
-$config['database']['username'] = 'root';
-$config['database']['password'] = '';
-$config['database']['db'] = 'source_lte';
+$config['database']['host'] = 'remotemysql.com';
+$config['database']['username'] = 'No9KkoQJGK';
+$config['database']['password'] = 'VMTXB2LUzt';
+$config['database']['db'] = 'No9KkoQJGK';
 $config['database']['port'] = '3306';
 $config['database']['charset'] = 'utf8';
 $config['database']['prefix'] = 'table_';

@@ -1,9 +1,13 @@
 <?php
 if (!isset($dispatcher)) {
+    header('Location: ' . "dashboard", true, 301);
     die();
 }
 $com = $var_router['com'];
-var_dump($admin_type);
+
+if (!$d) {
+    $d = new MysqliDb ($config['database']);
+}
 
 switch ($com) {
     case '':
@@ -11,16 +15,17 @@ switch ($com) {
 
     default:
         $component = $com;
+        if ($component) {
+            include "components/$component/index.php";
+        }
+        else {
+            redirect('404.php', 404);
+        }
         break;
 }
 
 include "components/layouts/admin_css.php";
-if ($component) {
-    include "components/$component/index.php";
-}
-else {
-    redirect('404.php', 404);
-}
+
 $template = $template ? "components/$component/$template" : 'components/layouts/404.php';
 
 
@@ -29,6 +34,7 @@ $template = $template ? "components/$component/$template" : 'components/layouts/
 <html>
 
 <head>
+    <base href="//<?= $config_url . "/admin/" ?>">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>AdminLTE 3 | Dashboard</title>
@@ -38,6 +44,7 @@ $template = $template ? "components/$component/$template" : 'components/layouts/
     <?php foreach ( $admin_css as $item_css ): ?>
     <link rel="stylesheet" href="<?= $item_css ?>">
     <?php endforeach; ?>
+    <link rel="stylesheet" href="dist/css/admin_style.css">
 </head>
 
 <body class="hold-transition sidebar-mini layout-footer-fixed">

@@ -1,5 +1,6 @@
 {
     "require": {
-        "nikic/fast-route": "v1.3.*"
+        "nikic/fast-route": "v1.3.*",
+        "thingengineer/mysqli-database-class": "dev-master"
     }
 }

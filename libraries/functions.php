@@ -34,16 +34,16 @@ function magic_quote($str, $d=false)
 }
 
 
-function getMenuPermission($table, $type, $action, $title, $lever = null)
+function getMenuPermission($title, $table, $act, $type)
 {
 	global $config_url;
-	$base_link = "<li><a href='{%link%}'>{%title%}</a></li>";
-	$link = "$config_url/admin/$table/$type/$action";
+	$base_link = "<li class=\"nav-item\"><a class=\"nav-link\" href='{%link%}'><i class=\"far fa-circle nav-icon\"></i><p>{%title%}</p></a></li>";
+    $link = "$table";
 
-	if ($lever !== null) {
-		$lever = (int)$lever;
-		$link .= _DS . $lever;
-	}
+    $query_builder = http_build_query(compact('act', 'type'));
+    if ($query_builder) {
+        $link .= "?$query_builder";
+    }
 
 	return str_replace(["{%link%}", "{%title%}"], [$link, $title], $base_link);
 }
